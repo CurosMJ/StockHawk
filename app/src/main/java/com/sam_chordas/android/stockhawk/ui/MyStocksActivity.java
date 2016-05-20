@@ -190,7 +190,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     //noinspection SimplifiableIfStatement
     if (id == R.id.action_settings) {
-//      startActivity(new Intent(this, SettingsActivity.class));
+      startActivity(new Intent(this, SettingsActivity.class));
     }
 
     if (id == R.id.action_change_units){
@@ -208,9 +208,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     // Show a % icon when showPercent is false
     // Show a $ icon when showPercent is true
     if (Utils.showPercent) {
-      item.setTitle("$");
+      item.setIcon(R.drawable.ic_attach_money_white_24dp);
     } else {
-      item.setTitle("%");
+      item.setIcon(R.drawable.percent);
     }
   }
 

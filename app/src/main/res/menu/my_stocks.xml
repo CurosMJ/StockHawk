@@ -7,7 +7,8 @@
       app:showAsAction="always"
       android:title="@string/action_change_units" />
   <item android:id="@+id/action_settings"
+      android:icon="@drawable/ic_settings_white"
       android:title="@string/action_settings"
       android:orderInCategory="100"
-      app:showAsAction="never" />
+      app:showAsAction="ifRoom" />
 </menu>

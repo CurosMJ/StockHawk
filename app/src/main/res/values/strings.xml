@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <resources>
   <string name="app_name">Stock Hawk</string>
 
@@ -10,4 +11,20 @@
   <string name="input_hint">FB</string>
   <string name="input_prefill"></string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+
+  <string name="shared_preferences_file">stock_hawk_preferences</string>
+  <string name="preference_default_unit">Default Stock Change Unit</string>
+  <string name="preference_default_unit_summary_percent">Use percentage as default unit</string>
+  <string name="preference_default_unit_summary_dollar">Use dollars as default unit</string>
+  <string name="change_default_unit">%</string>
+  <string name="preference_clear_database">Clear database</string>
+  <string name="preference_reset_stocks">Reset selected stocks to default</string>
+  <string-array name="preference_default_unit_entries">
+      <item>Percentage (%)</item>
+      <item>USD ($)</item>
+  </string-array>
+  <string-array name="preference_default_unit_values">
+      <item>%</item>
+      <item>$</item>
+  </string-array>
 </resources>
