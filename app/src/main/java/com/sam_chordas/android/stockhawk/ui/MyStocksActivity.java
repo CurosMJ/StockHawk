@@ -177,6 +177,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public boolean onCreateOptionsMenu(Menu menu) {
       getMenuInflater().inflate(R.menu.my_stocks, menu);
       restoreActionBar();
+      setChangeUnitsTitle(menu.findItem(R.id.action_change_units));
       return true;
   }
 
@@ -189,16 +190,28 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     //noinspection SimplifiableIfStatement
     if (id == R.id.action_settings) {
-      return true;
+//      startActivity(new Intent(this, SettingsActivity.class));
     }
 
     if (id == R.id.action_change_units){
       // this is for changing stock changes from percent value to dollar value
       Utils.showPercent = !Utils.showPercent;
       this.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
+      setChangeUnitsTitle(item);
     }
 
     return super.onOptionsItemSelected(item);
+  }
+
+  protected void setChangeUnitsTitle(MenuItem item)
+  {
+    // Show a % icon when showPercent is false
+    // Show a $ icon when showPercent is true
+    if (Utils.showPercent) {
+      item.setTitle("$");
+    } else {
+      item.setTitle("%");
+    }
   }
 
   @Override
