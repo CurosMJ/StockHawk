@@ -1,13 +1,16 @@
 package com.sam_chordas.android.stockhawk.ui;
 
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -53,10 +56,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Cursor mCursor;
   boolean isConnected;
 
+  private BroadcastReceiver toastBroadcastReceiver;
+  private LocalBroadcastManager localBroadcastManager;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mContext = this;
+    localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
     ConnectivityManager cm =
         (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -116,7 +123,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                   } else {
                     // Add the stock to DB
                     mServiceIntent.putExtra("tag", "add");
-                    mServiceIntent.putExtra("symbol", input.toString());
+                    mServiceIntent.putExtra("symbol", input.toString().toUpperCase());
                     startService(mServiceIntent);
                   }
                 }
@@ -160,6 +167,23 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onResume() {
     super.onResume();
     getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+
+    if (toastBroadcastReceiver == null) {
+      toastBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          Toast.makeText(mContext, intent.getStringExtra("text"), Toast.LENGTH_SHORT).show();
+        }
+      };
+    }
+    localBroadcastManager.registerReceiver(toastBroadcastReceiver, new IntentFilter(StockIntentService.TOAST));
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+
+    localBroadcastManager.unregisterReceiver(toastBroadcastReceiver);
   }
 
   public void networkToast(){

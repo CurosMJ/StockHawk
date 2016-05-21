@@ -33,6 +33,8 @@ public class StockTaskService extends GcmTaskService{
   private StringBuilder mStoredSymbols = new StringBuilder();
   private boolean isUpdate;
 
+  public InvalidSymbolException invalidSymbolException = null;
+
   public StockTaskService(){}
 
   public StockTaskService(Context context){
@@ -125,6 +127,8 @@ public class StockTaskService extends GcmTaskService{
               Utils.quoteJsonToContentVals(getResponse));
         }catch (RemoteException | OperationApplicationException e){
           Log.e(LOG_TAG, "Error applying batch insert", e);
+        } catch (InvalidSymbolException e) {
+          this.invalidSymbolException = e;
         }
       } catch (IOException e){
         e.printStackTrace();

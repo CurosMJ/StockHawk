@@ -11,6 +11,8 @@
   <string name="input_hint">FB</string>
   <string name="input_prefill"></string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+  <string name="invalid_symbol_toast">Oops! The symbol you provided does not exist</string>
+  <string name="symbol_added_toast_suffix"> has been added</string>
 
   <string name="shared_preferences_file">stock_hawk_preferences</string>
   <string name="preference_default_unit">Default Stock Change Unit</string>
