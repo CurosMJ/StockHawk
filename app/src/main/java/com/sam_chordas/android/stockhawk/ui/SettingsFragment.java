@@ -3,10 +3,12 @@ package com.sam_chordas.android.stockhawk.ui;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.StockHawk;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 
 import java.util.prefs.PreferenceChangeEvent;
@@ -19,6 +21,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
   protected SettingsActivity activity;
   protected SharedPreferences preferences;
+  protected StockHawk application;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     addPreferencesFromResource(R.xml.preference_screen);
     activity = (SettingsActivity) getActivity();
     preferences = activity.preferences;
+    application = (StockHawk) getActivity().getApplication();
 
     preferences.registerOnSharedPreferenceChangeListener(this);
+
+    findPreference(getString(R.string.preference_reset_stocks)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+      @Override
+      public boolean onPreferenceClick(Preference preference) {
+        application.setDefaultStocks();
+        return false;
+      }
+    });
 
     setChangeUnitSummary();
   }

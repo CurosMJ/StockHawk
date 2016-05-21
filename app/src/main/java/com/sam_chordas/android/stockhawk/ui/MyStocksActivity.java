@@ -7,9 +7,11 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -38,6 +40,9 @@ import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
   /**
@@ -56,6 +61,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Cursor mCursor;
   boolean isConnected;
 
+  private SharedPreferences preferences;
   private BroadcastReceiver toastBroadcastReceiver;
   private LocalBroadcastManager localBroadcastManager;
 
@@ -63,6 +69,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mContext = this;
+    preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
     localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
     ConnectivityManager cm =
         (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -71,18 +78,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     isConnected = activeNetwork != null &&
         activeNetwork.isConnectedOrConnecting();
     setContentView(R.layout.activity_my_stocks);
-    // The intent service is for executing immediate pulls from the Yahoo API
-    // GCMTaskService can only schedule tasks, they cannot execute immediately
-    mServiceIntent = new Intent(this, StockIntentService.class);
-    if (savedInstanceState == null){
-      // Run the initialize task service so that some stocks appear upon an empty database
-      mServiceIntent.putExtra("tag", "init");
-      if (isConnected){
-        startService(mServiceIntent);
-      } else{
-        networkToast();
-      }
-    }
+
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
@@ -110,10 +106,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 @Override public void onInput(MaterialDialog dialog, CharSequence input) {
                   // On FAB click, receive user input. Make sure the stock doesn't already exist
                   // in the DB and proceed accordingly
-                  Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                      new String[] { QuoteColumns.SYMBOL }, QuoteColumns.SYMBOL + "= ?",
-                      new String[] { input.toString() }, null);
-                  if (c.getCount() != 0) {
+                  Set<String> stocks = preferences.getStringSet("stocks", new HashSet<String>());
+                  if (stocks.contains(input.toString().toUpperCase())) {
                     Toast toast =
                         Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
                             Toast.LENGTH_LONG);
@@ -121,10 +115,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     toast.show();
                     return;
                   } else {
-                    // Add the stock to DB
-                    mServiceIntent.putExtra("tag", "add");
-                    mServiceIntent.putExtra("symbol", input.toString().toUpperCase());
-                    startService(mServiceIntent);
+                    if (input.toString().length() > 0) {
+                      // Add the stock to DB
+                      mServiceIntent.putExtra("tag", "add");
+                      mServiceIntent.putExtra("symbol", input.toString().toUpperCase());
+                      startService(mServiceIntent);
+                    }
                   }
                 }
               })
@@ -166,6 +162,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   @Override
   public void onResume() {
     super.onResume();
+    // The intent service is for executing immediate pulls from the Yahoo API
+    // GCMTaskService can only schedule tasks, they cannot execute immediately
+    mServiceIntent = new Intent(this, StockIntentService.class);
+    // Run the initialize task service every time we resume
+    mServiceIntent.putExtra("tag", "init");
+    if (isConnected){
+      startService(mServiceIntent);
+    } else{
+      networkToast();
+    }
     getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
 
     if (toastBroadcastReceiver == null) {
