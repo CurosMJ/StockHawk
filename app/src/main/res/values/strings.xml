@@ -14,6 +14,7 @@
   <string name="invalid_symbol_toast">Oops! The symbol you provided does not exist</string>
   <string name="symbol_added_toast_suffix"> has been added</string>
 
+  <string name="no_stocks">No stocks added</string>
   <string name="shared_preferences_file">stock_hawk_preferences</string>
   <string name="preference_default_unit">Default Stock Change Unit</string>
   <string name="preference_default_unit_summary_percent">Use percentage as default unit</string>

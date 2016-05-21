@@ -6,7 +6,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
-import android.text.InputType;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -14,9 +13,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.StockHawk;
 import com.sam_chordas.android.stockhawk.rest.Utils;
-
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 /**
  * Created by curos on 20/5/16.
@@ -28,14 +24,24 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
   protected StockHawk application;
 
   @Override
+  public void onResume() {
+    super.onStart();
+    preferences.registerOnSharedPreferenceChangeListener(this);
+  }
+
+  @Override
+  public void onPause() {
+    super.onStop();
+    preferences.unregisterOnSharedPreferenceChangeListener(this);
+  }
+
+  @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     addPreferencesFromResource(R.xml.preference_screen);
     activity = (SettingsActivity) getActivity();
     preferences = activity.preferences;
     application = (StockHawk) getActivity().getApplication();
-
-    preferences.registerOnSharedPreferenceChangeListener(this);
 
     findPreference(getString(R.string.preference_reset_stocks)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
       @Override

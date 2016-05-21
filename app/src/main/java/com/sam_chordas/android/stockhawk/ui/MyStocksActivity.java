@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
@@ -61,6 +62,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Cursor mCursor;
   boolean isConnected;
 
+  private TextView noStocks;
+  private RecyclerView stocks;
   private SharedPreferences preferences;
   private BroadcastReceiver toastBroadcastReceiver;
   private LocalBroadcastManager localBroadcastManager;
@@ -79,23 +82,24 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         activeNetwork.isConnectedOrConnecting();
     setContentView(R.layout.activity_my_stocks);
 
-    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    noStocks = (TextView) findViewById(R.id.no_stocks);
+    stocks = (RecyclerView) findViewById(R.id.recycler_view);
+    stocks.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
     mCursorAdapter = new QuoteCursorAdapter(this, null);
-    recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
+    stocks.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
             new RecyclerViewItemClickListener.OnItemClickListener() {
               @Override public void onItemClick(View v, int position) {
                 //TODO:
                 // do something on item click
               }
             }));
-    recyclerView.setAdapter(mCursorAdapter);
+    stocks.setAdapter(mCursorAdapter);
 
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    fab.attachToRecyclerView(recyclerView);
+    fab.attachToRecyclerView(stocks);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         if (isConnected){
@@ -134,7 +138,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
     mItemTouchHelper = new ItemTouchHelper(callback);
-    mItemTouchHelper.attachToRecyclerView(recyclerView);
+    mItemTouchHelper.attachToRecyclerView(stocks);
 
     mTitle = getTitle();
     if (isConnected){
@@ -259,6 +263,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onLoadFinished(Loader<Cursor> loader, Cursor data){
     mCursorAdapter.swapCursor(data);
     mCursor = data;
+
+    if (mCursor.getCount() == 0) {
+      noStocks.setVisibility(View.VISIBLE);
+      stocks.setVisibility(View.GONE);
+    } else {
+      noStocks.setVisibility(View.GONE);
+      stocks.setVisibility(View.VISIBLE);
+    }
   }
 
   @Override
