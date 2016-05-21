@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
+import android.text.InputType;
 import android.util.Log;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.StockHawk;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -36,7 +40,19 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     findPreference(getString(R.string.preference_reset_stocks)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
       @Override
       public boolean onPreferenceClick(Preference preference) {
-        application.setDefaultStocks();
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.preference_reset_stocks_confirmation)
+                .cancelable(true)
+                .positiveText(android.R.string.yes)
+                .negativeText(android.R.string.cancel)
+                .negativeColor(getResources().getColor(R.color.material_green_700))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                  @Override
+                  public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    application.setDefaultStocks();
+                  }
+                })
+                .show();
         return false;
       }
     });

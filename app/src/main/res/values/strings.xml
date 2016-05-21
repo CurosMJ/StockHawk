@@ -21,6 +21,9 @@
   <string name="change_default_unit">%</string>
   <string name="preference_clear_database">Clear database</string>
   <string name="preference_reset_stocks">Reset selected stocks to default</string>
+  <string name="preference_reset_stocks_confirmation">Are you sure you want to reset stocks to default?</string>
+  <string name="yes">Yes</string>
+  <string name="no">No</string>
   <string-array name="preference_default_unit_entries">
       <item>Percentage (%)</item>
       <item>USD ($)</item>
