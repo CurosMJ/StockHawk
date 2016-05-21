@@ -7,7 +7,7 @@
       app:showAsAction="always"
       android:title="@string/action_change_units" />
   <item android:id="@+id/action_settings"
-      android:icon="@drawable/ic_settings_white"
+      android:icon="@drawable/ic_settings_white_24dp"
       android:title="@string/action_settings"
       android:orderInCategory="100"
       app:showAsAction="ifRoom" />

@@ -234,7 +234,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     if (Utils.showPercent) {
       item.setIcon(R.drawable.ic_attach_money_white_24dp);
     } else {
-      item.setIcon(R.drawable.percent);
+      item.setIcon(R.drawable.ic_money_off_white_24dp);
     }
   }
 
