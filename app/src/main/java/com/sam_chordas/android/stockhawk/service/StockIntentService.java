@@ -20,6 +20,7 @@ import java.util.HashSet;
  */
 public class StockIntentService extends IntentService {
   public static String TOAST = "TOAST";
+  public static String SERVICE_RESULT = "SERVICE_RESULT";
 
   public StockIntentService(){
     super(StockIntentService.class.getName());
@@ -31,6 +32,8 @@ public class StockIntentService extends IntentService {
 
   @Override protected void onHandleIntent(Intent intent) {
     Log.d(StockIntentService.class.getSimpleName(), "Stock Intent Service");
+
+    LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     StockTaskService stockTaskService = new StockTaskService(this);
     Bundle args = new Bundle();
@@ -39,19 +42,22 @@ public class StockIntentService extends IntentService {
     }
     // We can call OnRunTask from the intent service to force it to run immediately instead of
     // scheduling a task.
-    stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
+    int status = stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
+    Intent serviceResult = new Intent(SERVICE_RESULT);
+    serviceResult.putExtra("status", status);
+    localBroadcastManager.sendBroadcast(serviceResult);
 
     if (intent.getStringExtra("tag").equals("add")) {
-      Intent broadcast = new Intent(TOAST);
+      Intent toastBroadcast = new Intent(TOAST);
       if (stockTaskService.invalidSymbolException != null) {
-        broadcast.putExtra("text", getString(R.string.invalid_symbol_toast));
+        toastBroadcast.putExtra("text", getString(R.string.invalid_symbol_toast));
       } else {
         HashSet<String> stocks = new HashSet<String>(preferences.getStringSet("stocks", new HashSet<String>()));
         stocks.add(intent.getStringExtra("symbol"));
         preferences.edit().putStringSet("stocks", stocks).commit();
-        broadcast.putExtra("text", intent.getStringExtra("symbol").concat(" ").concat(getString(R.string.symbol_added_toast_suffix)));
+        toastBroadcast.putExtra("text", intent.getStringExtra("symbol").concat(" ").concat(getString(R.string.symbol_added_toast_suffix)));
       }
-      LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
+      localBroadcastManager.sendBroadcast(toastBroadcast);
     }
   }
 }

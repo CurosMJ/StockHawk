@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallb
 import java.util.HashSet;
 import java.util.Set;
 
-public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener{
 
   /**
    * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -62,10 +63,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private Cursor mCursor;
   boolean isConnected;
 
+  private SwipeRefreshLayout swipeRefreshLayout;
   private TextView noStocks;
   private RecyclerView stocks;
   private SharedPreferences preferences;
   private BroadcastReceiver toastBroadcastReceiver;
+  private BroadcastReceiver serviceResultBroadcastReceiver;
   private LocalBroadcastManager localBroadcastManager;
 
   @Override
@@ -82,6 +85,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         activeNetwork.isConnectedOrConnecting();
     setContentView(R.layout.activity_my_stocks);
 
+    swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+    swipeRefreshLayout.setOnRefreshListener(this);
+    swipeRefreshLayout.setColorSchemeResources(
+            R.color.accent,
+            R.color.material_indigo_700,
+            R.color.material_blue_500);
     noStocks = (TextView) findViewById(R.id.no_stocks);
     stocks = (RecyclerView) findViewById(R.id.recycler_view);
     stocks.setLayoutManager(new LinearLayoutManager(this));
@@ -166,6 +175,34 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   @Override
   public void onResume() {
     super.onResume();
+    refreshData();
+    if (toastBroadcastReceiver == null) {
+      toastBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          Toast.makeText(mContext, intent.getStringExtra("text"), Toast.LENGTH_SHORT).show();
+        }
+      };
+    }
+    if (serviceResultBroadcastReceiver == null) {
+      serviceResultBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          refreshComplete();
+        }
+      };
+    }
+    localBroadcastManager.registerReceiver(toastBroadcastReceiver, new IntentFilter(StockIntentService.TOAST));
+    localBroadcastManager.registerReceiver(serviceResultBroadcastReceiver, new IntentFilter(StockIntentService.SERVICE_RESULT));
+  }
+
+  public void refreshComplete()
+  {
+    swipeRefreshLayout.setRefreshing(false);
+  }
+
+  public void refreshData()
+  {
     // The intent service is for executing immediate pulls from the Yahoo API
     // GCMTaskService can only schedule tasks, they cannot execute immediately
     mServiceIntent = new Intent(this, StockIntentService.class);
@@ -177,16 +214,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
       networkToast();
     }
     getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
-
-    if (toastBroadcastReceiver == null) {
-      toastBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-          Toast.makeText(mContext, intent.getStringExtra("text"), Toast.LENGTH_SHORT).show();
-        }
-      };
-    }
-    localBroadcastManager.registerReceiver(toastBroadcastReceiver, new IntentFilter(StockIntentService.TOAST));
   }
 
   @Override
@@ -194,6 +221,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     super.onPause();
 
     localBroadcastManager.unregisterReceiver(toastBroadcastReceiver);
+    localBroadcastManager.unregisterReceiver(serviceResultBroadcastReceiver);
   }
 
   public void networkToast(){
@@ -278,4 +306,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     mCursorAdapter.swapCursor(null);
   }
 
+  @Override
+  public void onRefresh() {
+    refreshData();
+  }
 }
