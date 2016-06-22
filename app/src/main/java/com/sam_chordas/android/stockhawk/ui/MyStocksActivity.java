@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk.ui;
 
 import android.app.LoaderManager;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -21,14 +22,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.StockHawk;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
@@ -71,10 +75,22 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private BroadcastReceiver serviceResultBroadcastReceiver;
   private LocalBroadcastManager localBroadcastManager;
 
+  private boolean forConfiguration = false;
+  private Integer widgetId;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mContext = this;
+    setContentView(R.layout.activity_my_stocks);
+
+    if (getIntent().getAction().equals(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)) {
+      forConfiguration = true;
+      findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
+      widgetId = getIntent().getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+      setResult(RESULT_CANCELED);
+    }
+
     preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
     localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
     ConnectivityManager cm =
@@ -83,7 +99,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
     isConnected = activeNetwork != null &&
         activeNetwork.isConnectedOrConnecting();
-    setContentView(R.layout.activity_my_stocks);
 
     swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
     swipeRefreshLayout.setOnRefreshListener(this);
@@ -102,12 +117,30 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               @Override public void onItemClick(View v, int position) {
                 //TODO:
                 // do something on item click
+                if (forConfiguration) {
+                  mCursor.moveToPosition(position);
+                  mCursor.getColumnNames();
+                  preferences.edit()
+                          .putString(StockHawk.widgetStockPreferenceKey(widgetId), mCursor.getString(mCursor.getColumnIndex("symbol")))
+                  .commit();
+
+                  Intent intent = new Intent(StockTaskService.STOCKS_UPDATE);
+                  sendBroadcast(intent);
+
+                  Intent configSuccess = new Intent();
+                  configSuccess.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+                  setResult(RESULT_OK, configSuccess);
+                  finish();
+                }
               }
             }));
     stocks.setAdapter(mCursorAdapter);
 
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+    if (forConfiguration) {
+      fab.setVisibility(View.GONE);
+    }
     fab.attachToRecyclerView(stocks);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -145,13 +178,20 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
       }
     });
 
-    ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
-    mItemTouchHelper = new ItemTouchHelper(callback);
-    mItemTouchHelper.attachToRecyclerView(stocks);
+    if (!forConfiguration) {
+      ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
+      mItemTouchHelper = new ItemTouchHelper(callback);
+      mItemTouchHelper.attachToRecyclerView(stocks);
+    }
 
-    mTitle = getTitle();
+    if (! forConfiguration) {
+      mTitle = getTitle();
+    } else {
+      mTitle = getString(R.string.widget_configuration_title);
+    }
+
     if (isConnected){
-      long period = 3600L;
+      long period = 3L;
       long flex = 10L;
       String periodicTag = "periodic";
 
@@ -171,6 +211,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     }
   }
 
+  public void handleCancel(View v)
+  {
+    finish();
+  }
 
   @Override
   public void onResume() {
@@ -237,9 +281,13 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-      getMenuInflater().inflate(R.menu.my_stocks, menu);
+      if (! forConfiguration) {
+        getMenuInflater().inflate(R.menu.my_stocks, menu);
+      }
       restoreActionBar();
-      setChangeUnitsTitle(menu.findItem(R.id.action_change_units));
+      if (! forConfiguration) {
+        setChangeUnitsTitle(menu.findItem(R.id.action_change_units));
+      }
       return true;
   }
 

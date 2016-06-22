@@ -16,6 +16,11 @@ public class StockHawk extends Application {
 
   private SharedPreferences preferences;
 
+  public static String widgetStockPreferenceKey(Integer widgetId)
+  {
+    return "stock_widget_".concat(widgetId.toString());
+  }
+
   @Override
   public void onCreate() {
     super.onCreate();

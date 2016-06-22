@@ -59,5 +59,8 @@ public class StockIntentService extends IntentService {
       }
       localBroadcastManager.sendBroadcast(toastBroadcast);
     }
+
+    Intent updateIntent = new Intent(StockTaskService.STOCKS_UPDATE);
+    this.sendBroadcast(updateIntent);
   }
 }
