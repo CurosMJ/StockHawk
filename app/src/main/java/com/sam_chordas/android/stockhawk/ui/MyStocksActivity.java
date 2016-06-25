@@ -35,6 +35,7 @@ import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
+import com.sam_chordas.android.stockhawk.FetchHistoricalData;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.StockHawk;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
@@ -337,11 +338,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     // Handle clicks on stocks
     @Override
     public void onItemClick(View v, int position) {
+        mCursor.moveToPosition(position);
         if (forConfiguration) {
-            mCursor.moveToPosition(position);
-            mCursor.getColumnNames();
             preferences.edit()
-                    .putString(StockHawk.widgetStockPreferenceKey(widgetId), mCursor.getString(mCursor.getColumnIndex("symbol")))
+                    .putString(StockHawk.widgetStockPreferenceKey(widgetId), mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL)))
                     .apply();
 
             Intent intent = new Intent(StockTaskService.STOCKS_UPDATE);
@@ -351,6 +351,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             configSuccess.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
             setResult(RESULT_OK, configSuccess);
             finish();
+        } else {
+            Intent intent = new Intent(this, StockDetailsActivity.class);
+            intent.putExtra("symbol", mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL)));
+            startActivity(intent);
         }
     }
 }
