@@ -14,6 +14,7 @@
   <string name="invalid_symbol_toast">Oops! The symbol you provided does not exist</string>
   <string name="symbol_added_toast_suffix"> has been added</string>
 
+  <string name="setting_activity_name">Settings</string>
   <string name="widget_configuration_title">Choose Stock</string>
   <string name="no_stocks">No stocks added</string>
   <string name="shared_preferences_file">stock_hawk_preferences</string>
@@ -21,7 +22,9 @@
   <string name="preference_default_unit_summary_percent">Use percentage as default unit</string>
   <string name="preference_default_unit_summary_dollar">Use dollars as default unit</string>
   <string name="change_default_unit">%</string>
+  <string name="database_clear_success">Database cleared successfully!</string>
   <string name="preference_clear_database">Clear database</string>
+  <string name="preference_clear_database_confirmation">Are you sure you want to clear database?</string>
   <string name="preference_reset_stocks">Reset selected stocks to default</string>
   <string name="preference_reset_stocks_confirmation">Are you sure you want to reset stocks to default?</string>
   <string name="yes">Yes</string>

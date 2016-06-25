@@ -10,17 +10,19 @@ import com.sam_chordas.android.stockhawk.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
-  protected SharedPreferences preferences;
+    protected SharedPreferences preferences;
 
-  @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_settings);
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
 
-    preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        setTitle(R.string.setting_activity_name);
 
-    getFragmentManager().beginTransaction()
-            .replace(R.id.settings_fragment, new SettingsFragment())
-            .commit();
-  }
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.settings_fragment, new SettingsFragment())
+                .commit();
+    }
 }
