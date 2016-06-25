@@ -1,36 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp"
+<RelativeLayout
     android:background="@android:color/white"
-    >
-  <TextView
-      android:textColor="@android:color/tertiary_text_dark"
-      android:id="@+id/stock_symbol"
-      style="@style/StockSymbolTextStyle"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:gravity="left|center_vertical"
-      android:text="GOOG"
-      />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
   <LinearLayout
-      android:layout_width="0dp"
-      android:layout_height="match_parent"
-      android:layout_weight="1"
-      android:gravity="right"
-      >
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
+      android:orientation="vertical"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
     <TextView
-        android:textColor="@android:color/tertiary_text_dark"
+        android:textColor="@android:color/secondary_text_light"
+        android:id="@+id/stock_symbol_name"
+        style="@style/StockSymbolNameTextStyle"
+        android:layout_width="wrap_content"
+        android:lines="1"
+        android:layout_height="wrap_content"
+        tools:text="Alphabet, Inc."
+        />
+    <TextView
+        android:textColor="@android:color/secondary_text_light"
+        android:id="@+id/stock_symbol"
+        style="@style/StockSymbolTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="GOOG"
+        />
+  </LinearLayout>
+  <LinearLayout
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+    <TextView
+        android:textColor="@android:color/secondary_text_light"
         android:id="@+id/bid_price"
+        android:layout_gravity="end"
         style="@style/BidPriceTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="10sp"
-        android:text="1000.00"
-        android:layout_gravity="center_vertical"/>
+        tools:text="1000.00"
+        />
     <TextView
         android:id="@+id/change_up"
         android:background="@drawable/percent_change_pill_green"
@@ -39,8 +57,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
-        android:text="100%"
-        android:layout_gravity="center_vertical"/>
+        tools:text="100%"
+        />
 
     <TextView
         android:id="@+id/change_down"
@@ -50,7 +68,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
-        android:text="100%"
-        android:layout_gravity="center_vertical"/>
+        tools:text="100%"
+        />
   </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

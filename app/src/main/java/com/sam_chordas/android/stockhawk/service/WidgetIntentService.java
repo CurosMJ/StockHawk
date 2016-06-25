@@ -48,19 +48,28 @@ public class WidgetIntentService extends IntentService {
 
       Cursor data = getContentResolver().query(
               QuoteProvider.Quotes.CONTENT_URI,
-              new String[] {QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
+              new String[] {
+                      QuoteColumns._ID,
+                      QuoteColumns.NAME,
+                      QuoteColumns.SYMBOL,
+                      QuoteColumns.BIDPRICE,
+                      QuoteColumns.PERCENT_CHANGE,
+                      QuoteColumns.CHANGE,
+                      QuoteColumns.ISUP
+              },
               QuoteColumns.SYMBOL + " = ?",
               new String[] {symbol},
               null);
 
       data.moveToPosition(0);
 
-
+      String symbolName = data.getString(data.getColumnIndex(QuoteColumns.NAME));
       String bidPrice = data.getString(data.getColumnIndex(QuoteColumns.BIDPRICE));
       String change = data.getString(data.getColumnIndex(QuoteColumns.PERCENT_CHANGE));
 
       RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widget);
 
+      views.setTextViewText(R.id.stock_symbol_name, symbolName);
       views.setTextViewText(R.id.stock_symbol, symbol);
       views.setTextViewText(R.id.bid_price, bidPrice);
       views.setTextViewText(R.id.change_up, change);
