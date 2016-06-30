@@ -33,7 +33,7 @@
   <string name="widget_configuration_title">Choose Stock</string>
 
   <!-- Name of the shared prefs file, no need to change for l18n -->
-  <string name="shared_preferences_file">stock_hawk_preferences</string>
+  <string name="shared_preferences_file" translatable="false">stock_hawk_preferences</string>
 
   <!-- The following strings are used in Settings Activity -->
   <string name="setting_activity_name">Settings</string>
