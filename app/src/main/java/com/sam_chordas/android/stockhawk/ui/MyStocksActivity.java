@@ -142,8 +142,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         });
 
         if (isConnected) {
-            long period = 10L;
-            long flex = 4L;
+            long period = 3600L;
+            long flex = 10L;
             String periodicTag = "periodic";
 
             // create a periodic task to pull stocks once every hour after the app has been opened. This

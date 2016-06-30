@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.service;
 
 import android.content.ContentProviderOperation;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.os.RemoteException;
@@ -111,10 +112,15 @@ public class StockTaskService extends GcmTaskService {
                 operations.addAll(Utils.quoteJsonToContentVals(getResponse));
                 mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY, operations);
 
+                mContext.sendBroadcast(new Intent(STOCKS_UPDATE));
+                Log.d("StockHawk", "Stocks update");
+
             } catch (RemoteException | OperationApplicationException e) {
                 Log.e(LOG_TAG, "Error applying batch insert", e);
             } catch (InvalidStockSymbolException e) {
                 this.invalidStockSymbolException = e;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (IOException e) {
             e.printStackTrace();

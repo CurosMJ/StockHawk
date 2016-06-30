@@ -33,6 +33,7 @@
   </android.support.v4.widget.SwipeRefreshLayout>
 
   <com.melnykov.fab.FloatingActionButton
+      android:contentDescription="@string/add_stock_button"
       android:layout_alignParentBottom="true"
       android:layout_alignParentRight="true"
       android:id="@+id/fab"

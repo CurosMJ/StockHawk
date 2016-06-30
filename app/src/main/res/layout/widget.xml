@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/widget_layout"
     android:background="@android:color/white"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="52dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="16dp"
@@ -19,7 +20,7 @@
     <TextView
         android:textColor="@android:color/secondary_text_light"
         android:id="@+id/stock_symbol_name"
-        style="@style/StockSymbolNameTextStyle"
+        style="@style/Widget_StockSymbolNameTextStyle"
         android:layout_width="wrap_content"
         android:lines="1"
         android:layout_height="wrap_content"
@@ -28,7 +29,7 @@
     <TextView
         android:textColor="@android:color/secondary_text_light"
         android:id="@+id/stock_symbol"
-        style="@style/StockSymbolTextStyle"
+        style="@style/Widget_StockSymbolTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="GOOG"
@@ -44,7 +45,7 @@
         android:textColor="@android:color/secondary_text_light"
         android:id="@+id/bid_price"
         android:layout_gravity="end"
-        style="@style/BidPriceTextStyle"
+        style="@style/Widget_BidPriceTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="1000.00"
@@ -52,7 +53,7 @@
     <TextView
         android:id="@+id/change_up"
         android:background="@drawable/percent_change_pill_green"
-        style="@style/PercentChangeTextStyle"
+        style="@style/Widget_PercentChangeTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="3dp"
@@ -63,7 +64,7 @@
     <TextView
         android:id="@+id/change_down"
         android:background="@drawable/percent_change_pill_red"
-        style="@style/PercentChangeTextStyle"
+        style="@style/Widget_PercentChangeTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="3dp"

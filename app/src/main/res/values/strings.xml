@@ -4,7 +4,10 @@
 
   <string name="action_example">Example action</string>
 
+  <string name="add_stock_button">Add new stock for monitoring</string>
+
   <string name="loading">Loading...</string>
+  <string name="stock_deleted">Stock unavailable</string>
 
   <string name="action_settings">Settings</string>
   <string name="action_change_units">Change Units</string>

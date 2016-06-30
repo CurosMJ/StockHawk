@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Binder;
 import android.view.View;
@@ -14,6 +15,7 @@ public class ListWidgetViewFactory implements RemoteViewsService.RemoteViewsFact
 
     private Context context;
     private Cursor cursor;
+    private static String CLICK = "click";
 
     ListWidgetViewFactory(Context context)
     {
@@ -68,6 +70,10 @@ public class ListWidgetViewFactory implements RemoteViewsService.RemoteViewsFact
         views.setTextViewText(R.id.change_up, change);
         views.setTextViewText(R.id.change_down, change);
 
+        Intent clickIntent = new Intent();
+        clickIntent.putExtra("symbol", symbol);
+        views.setOnClickFillInIntent(R.id.widget_layout, clickIntent);
+
         if (cursor.getInt(cursor.getColumnIndex("is_up")) == 1) {
             views.setViewVisibility(R.id.change_up, View.VISIBLE);
             views.setViewVisibility(R.id.change_down, View.GONE);
@@ -81,7 +87,7 @@ public class ListWidgetViewFactory implements RemoteViewsService.RemoteViewsFact
 
     @Override
     public RemoteViews getLoadingView() {
-        return new RemoteViews(context.getPackageName(), R.layout.list_widget_loading);
+        return null;
     }
 
     @Override
