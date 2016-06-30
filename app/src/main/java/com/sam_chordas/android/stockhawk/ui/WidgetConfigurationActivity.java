@@ -1,9 +1,11 @@
-package com.sam_chordas.android.stockhawk;
+package com.sam_chordas.android.stockhawk.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
 import android.widget.ListView;
+
+import com.sam_chordas.android.stockhawk.R;
 
 import java.util.List;
 

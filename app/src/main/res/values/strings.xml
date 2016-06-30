@@ -19,6 +19,9 @@
   <string name="invalid_symbol_toast">Oops! The symbol you provided does not exist</string>
   <string name="symbol_added_toast_suffix"> has been added</string>
 
+  <string name="bid_price_is">Bid price is</string>
+  <string name="change_is">Change is</string>
+
   <string name="setting_activity_name">Settings</string>
   <string name="widget_configuration_title">Choose Stock</string>
   <string name="no_stocks">No stocks added</string>

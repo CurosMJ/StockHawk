@@ -49,12 +49,12 @@
         android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
         android:exported="false"/>
 
-    <service android:name=".service.WidgetIntentService"/>
+    <service android:name=".widget.WidgetIntentService"/>
 
-    <service android:name=".ListWidgetService"
+    <service android:name=".widget.ListWidgetService"
              android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-    <receiver android:name=".WidgetProvider">
+    <receiver android:name=".widget.WidgetProvider">
       <intent-filter>
         <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
         <action android:name="com.sam_chordas.android.stockhawk.STOCKS_UPDATE"/>
@@ -65,7 +65,7 @@
           android:resource="@xml/widget_info"/>
     </receiver>
 
-    <receiver android:name=".ListWidgetProvider">
+    <receiver android:name=".widget.ListWidgetProvider">
       <intent-filter>
         <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
         <action android:name="com.sam_chordas.android.stockhawk.STOCKS_UPDATE"/>

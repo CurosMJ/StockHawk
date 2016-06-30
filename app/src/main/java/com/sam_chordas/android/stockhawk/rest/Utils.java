@@ -102,4 +102,14 @@ public class Utils {
         }
         return builder.build();
     }
+
+    public static String addSpacesInSymbol(String symbol)
+    {
+        String[] blown = symbol.split("");
+        StringBuilder builder = new StringBuilder();
+        for (String s : blown) {
+            builder.append(s+" ");
+        }
+        return builder.toString();
+    }
 }

@@ -1,4 +1,4 @@
-package com.sam_chordas.android.stockhawk.service;
+package com.sam_chordas.android.stockhawk.widget;
 
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -8,15 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.StockHawk;
-import com.sam_chordas.android.stockhawk.WidgetProvider;
+import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.widget.WidgetProvider;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.ui.StockDetailsActivity;
@@ -99,12 +98,18 @@ public class WidgetIntentService extends IntentService {
                 views.setTextViewText(R.id.change_up, change);
                 views.setTextViewText(R.id.change_down, change);
 
+
+                views.setContentDescription(R.id.stock_symbol, Utils.addSpacesInSymbol(symbol));
+                views.setContentDescription(R.id.bid_price, getString(R.string.bid_price_is)+" "+bidPrice);
+
                 if (data.getInt(data.getColumnIndex("is_up")) == 1) {
                     views.setViewVisibility(R.id.change_up, View.VISIBLE);
                     views.setViewVisibility(R.id.change_down, View.GONE);
+                    views.setContentDescription(R.id.change_up, getString(R.string.change_is)+" "+change);
                 } else {
                     views.setViewVisibility(R.id.change_up, View.GONE);
                     views.setViewVisibility(R.id.change_down, View.VISIBLE);
+                    views.setContentDescription(R.id.change_down, getString(R.string.change_is)+" "+change);
                 }
             }
 

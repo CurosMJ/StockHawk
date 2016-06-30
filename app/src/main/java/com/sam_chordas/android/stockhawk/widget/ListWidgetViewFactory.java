@@ -1,4 +1,4 @@
-package com.sam_chordas.android.stockhawk;
+package com.sam_chordas.android.stockhawk.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.rest.Utils;
 
 public class ListWidgetViewFactory implements RemoteViewsService.RemoteViewsFactory{
 
@@ -70,15 +72,20 @@ public class ListWidgetViewFactory implements RemoteViewsService.RemoteViewsFact
         views.setTextViewText(R.id.change_up, change);
         views.setTextViewText(R.id.change_down, change);
 
+        views.setContentDescription(R.id.stock_symbol, Utils.addSpacesInSymbol(symbol));
+        views.setContentDescription(R.id.bid_price, context.getString(R.string.bid_price_is)+" "+bidPrice);
+
         Intent clickIntent = new Intent();
         clickIntent.putExtra("symbol", symbol);
         views.setOnClickFillInIntent(R.id.widget_layout, clickIntent);
 
         if (cursor.getInt(cursor.getColumnIndex("is_up")) == 1) {
             views.setViewVisibility(R.id.change_up, View.VISIBLE);
+            views.setContentDescription(R.id.change_up, context.getString(R.string.change_is)+" "+change);
             views.setViewVisibility(R.id.change_down, View.GONE);
         } else {
             views.setViewVisibility(R.id.change_up, View.GONE);
+            views.setContentDescription(R.id.change_down, context.getString(R.string.change_is)+" "+change);
             views.setViewVisibility(R.id.change_down, View.VISIBLE);
         }
 
