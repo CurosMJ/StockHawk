@@ -175,7 +175,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         Set<String> stocks = preferences.getStringSet("stocks", new HashSet<String>());
                         if (stocks.contains(input.toString().toUpperCase())) {
                             Toast toast =
-                                    Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
+                                    Toast.makeText(MyStocksActivity.this, getString(R.string.already_exists),
                                             Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                             toast.show();

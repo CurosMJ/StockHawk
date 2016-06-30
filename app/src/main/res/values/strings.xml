@@ -15,6 +15,7 @@
 
   <!-- Text for toasts, last one is the suffix used when a stock has been added  -->
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+  <string name="already_exists"></string>
   <string name="invalid_symbol_toast">Oops! The symbol you provided does not exist</string>
   <string name="symbol_added_toast_suffix"> has been added</string>
 
